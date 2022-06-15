@@ -1,0 +1,26 @@
+{
+    "name": "cherif/php",
+    "autoload": {
+        "psr-4": {
+            "Cherif\\FlightSearch\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cherif\\FlightSearch\\Test\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Cherif BOUCHELAGHEM",
+            "email": "cherif.bouchelaghem@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "myclabs/php-enum": "^1.8"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
+}
