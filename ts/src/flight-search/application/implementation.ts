@@ -84,9 +84,10 @@ const toPassengers = (invalidPassengers: InvalidPassengers): Passengers => {
 }
 
 const toCabinClass = (invalidCabinClass: InvalidCabinClass): CabinClass => {
-    return <"economic" | "business" | "first">invalidCabinClass
+    return invalidCabinClass as CabinClass
 }
-const validateFlightSearchCriteria = async (checkRouteIsServed: CheckRouteIsServed, invalidCriteria: InvalidFlightSearchCriteria): Promise<FlightSearchCriteria> => {
+const validateFlightSearchCriteria = async (checkRouteIsServed: CheckRouteIsServed,
+                                            invalidCriteria: InvalidFlightSearchCriteria): Promise<FlightSearchCriteria> => {
     const route = await toRoute(checkRouteIsServed, invalidCriteria.route)
     const flightTypePeriod = toFlightTypePeriod(invalidCriteria.flightTypePeriod)
     const passengers = toPassengers(invalidCriteria.passengers);
@@ -99,9 +100,11 @@ const validateFlightSearchCriteria = async (checkRouteIsServed: CheckRouteIsServ
     }
 }
 
-export const searchFlight = (checkRouteIsServed: CheckRouteIsServed): ValidateFlightSearchCriteria => async (invalidCriteria: InvalidFlightSearchCriteria): Promise<FlightSearchCriteria> => {
-    // validate route
-    return await validateFlightSearchCriteria(checkRouteIsServed, invalidCriteria);
+export const searchFlight = (checkRouteIsServed: CheckRouteIsServed): ValidateFlightSearchCriteria => {
+    return async (invalidCriteria: InvalidFlightSearchCriteria): Promise<FlightSearchCriteria> => {
+        // validate route
+        return await validateFlightSearchCriteria(checkRouteIsServed, invalidCriteria);
 
-    //
+        //
+    }
 }

@@ -1,4 +1,4 @@
-export type Airport = string;
+export type Airport = Readonly<string>;
 
 const airportValidationPattern = /^[A-Z]{3}$/
 
