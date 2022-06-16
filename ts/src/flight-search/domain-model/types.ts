@@ -1,5 +1,6 @@
 import {InvalidFlightSearchCriteria} from "../application/types";
 import {Airport} from "./airport";
+import {FlightType} from "./flight-type";
 
 export type CheckRouteIsServed = (route: Route) => Promise<boolean>
 
@@ -9,12 +10,6 @@ export type Route = Readonly<{
     origin: Airport,
     destination: Airport
 }>
-
-export enum FlightTypeEnum {
-    ONE_WAY = 'one-way',
-    ROUND_TRIP = 'round-trip'
-}
-export type FlightType = Readonly<FlightTypeEnum.ONE_WAY | FlightTypeEnum.ROUND_TRIP>
 
 export type FlightTypePeriod = Readonly<{
     flightType: FlightType,
@@ -38,3 +33,5 @@ export type FlightSearchCriteria = Readonly<{
 }>
 
 export * as airport from './airport'
+export * as flightDate from './flight-date'
+export * as flightType from './flight-type'

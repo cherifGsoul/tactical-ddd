@@ -7,5 +7,5 @@ export const fromCode = (code: string) => {
     if (!valid) {
         throw new TypeError('Airport code is not valid');
     }
-    return code;
+    return code as Airport;
 }

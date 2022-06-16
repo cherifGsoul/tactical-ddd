@@ -3,8 +3,12 @@ import {
     FlightSearchCriteria,
     Route,
     airport,
-    FlightTypeEnum,
-    FlightTypePeriod, FlightType, ValidateFlightSearchCriteria, Passengers, CabinClass
+    FlightTypePeriod,
+    ValidateFlightSearchCriteria,
+    Passengers,
+    CabinClass,
+    flightDate,
+    flightType
 } from "../domain-model/types";
 import {
     InvalidCabinClass,
@@ -13,7 +17,6 @@ import {
     InvalidPassengers,
     InvalidRoute
 } from "./types";
-import dayjs from "dayjs";
 
 const toRoute = async (checkRouteIsServed: CheckRouteIsServed, invalidRoute: InvalidRoute): Promise<Route> => {
     try {
@@ -31,44 +34,24 @@ const toRoute = async (checkRouteIsServed: CheckRouteIsServed, invalidRoute: Inv
     }
 }
 
-const isDate = (d: unknown): d is Date => {
-    return Object.prototype.toString.call(d) === '[object Date]'
-}
 const toFlightTypePeriod = (invalidFlightTypePeriod: InvalidFlightTypePeriod) => {
-    const {departingDate, flightType} = invalidFlightTypePeriod
-    if (!isDate(departingDate)) {
-        throw new Error('departing date must be valid date')
-    }
-    const dayDepartingDate = dayjs(departingDate)
-    const today = dayjs();
-    if (dayDepartingDate.isBefore(today)) {
-        throw new Error('departing date must be in the future')
-    }
+    const departingDate = flightDate.fromDate(invalidFlightTypePeriod.departingDate)
+    const type = flightType.from(invalidFlightTypePeriod.flightType)
 
     let flightTypePeriod: FlightTypePeriod = {
         returningDate: undefined,
-        flightType: flightType as FlightType,
-        departingDate: dayDepartingDate.toDate()
+        flightType: type,
+        departingDate: departingDate
     }
 
-    if (flightType === FlightTypeEnum.ROUND_TRIP) {
-        if (!isDate(invalidFlightTypePeriod.returningDate)) {
-            throw new Error('returning date must be a valid date for round trip flights');
+    if (type === flightType.from(flightType.FlightTypeEnum.ROUND_TRIP)) {
+        if (!invalidFlightTypePeriod.returningDate) {
+            throw new Error('Round trip flights must have a returning date');
         }
-
-        const dayReturningDate = dayjs(invalidFlightTypePeriod.returningDate)
-        if (dayReturningDate.isBefore(today)) {
-            throw new Error('departing date must be in the future')
-        }
-
-        if (dayReturningDate.isBefore(dayDepartingDate)) {
-            throw new Error('returning date must be after departing date')
-        }
-
-        flightTypePeriod = {...flightTypePeriod,returningDate: invalidFlightTypePeriod.returningDate}
+        const returningDate = flightDate.fromDate(invalidFlightTypePeriod.returningDate)
+        flightTypePeriod = {...flightTypePeriod, returningDate}
     }
-
-    return flightTypePeriod
+    return flightTypePeriod;
 }
 
 const toPassengers = (invalidPassengers: InvalidPassengers): Passengers => {
