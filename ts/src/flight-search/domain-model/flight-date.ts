@@ -15,3 +15,9 @@ export const fromDate = (date: Date): FlightDate => {
     }
     return date;
 }
+
+export const isAfter = (date: Date, other: Date) => {
+    const dayDate = dayjs(date);
+    const otherDay = dayjs(other);
+    return dayDate.isAfter(otherDay);
+}

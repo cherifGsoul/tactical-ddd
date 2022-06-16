@@ -1,6 +1,7 @@
 import {InvalidFlightSearchCriteria} from "../application/types";
 import {Airport} from "./airport";
 import {FlightType} from "./flight-type";
+import {FlightDate} from "./flight-date";
 
 export type CheckRouteIsServed = (route: Route) => Promise<boolean>
 
@@ -13,8 +14,8 @@ export type Route = Readonly<{
 
 export type FlightTypePeriod = Readonly<{
     flightType: FlightType,
-    departingDate: Date,
-    returningDate: Date | undefined | null,
+    departingDate: FlightDate,
+    returningDate: FlightDate | undefined | null,
 }>
 
 export type Passengers = Readonly<{
