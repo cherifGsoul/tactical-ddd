@@ -23,3 +23,5 @@ export type InvalidPassengers = {
 }
 
 export type InvalidCabinClass = string
+
+export type SearchFlight = (invalidCriteria: InvalidFlightSearchCriteria) => Promise<string>

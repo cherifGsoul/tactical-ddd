@@ -1,38 +1,37 @@
 import {
     CheckRouteIsServed,
     FlightSearchCriteria,
-    Route,
     airport,
     FlightTypePeriod,
-    ValidateFlightSearchCriteria,
     Passengers,
-    CabinClass,
+    cabin,
     flightDate,
-    flightType
-} from "../domain-model/types";
+    flightType,
+    route, EncryptFlightSearchCriteria, ValidateFlightSearchCriteria
+} from '../domain-model';
 import {
     InvalidCabinClass,
     InvalidFlightSearchCriteria,
     InvalidFlightTypePeriod,
     InvalidPassengers,
-    InvalidRoute
-} from "./types";
+    InvalidRoute, SearchFlight
+} from './types';
 
-const toRoute = async (checkRouteIsServed: CheckRouteIsServed, invalidRoute: InvalidRoute): Promise<Route> => {
-    let route: Route;
+const toRoute = async (checkRouteIsServed: CheckRouteIsServed, invalidRoute: InvalidRoute): Promise<route.Route> => {
+    let aRoute: route.Route;
     try {
-        route = {
-            origin: airport.fromCode(invalidRoute.origin),
-            destination: airport.fromCode(invalidRoute.destination)
-        }
+        aRoute = route.between(
+            airport.fromCode(invalidRoute.origin),
+            airport.fromCode(invalidRoute.destination)
+        );
     } catch (e) {
         throw new Error('Route is valid')
     }
-    const isServed = await checkRouteIsServed(route);
+    const isServed = await checkRouteIsServed(aRoute);
     if (!isServed) {
         throw new Error('Route is not served')
     }
-    return route
+    return aRoute
 }
 
 const toFlightTypePeriod = (invalidFlightTypePeriod: InvalidFlightTypePeriod) => {
@@ -83,10 +82,10 @@ const toPassengers = (invalidPassengers: InvalidPassengers): Passengers => {
     }
 }
 
-const toCabinClass = (invalidCabinClass: InvalidCabinClass): CabinClass => {
-    return invalidCabinClass as CabinClass
+const toCabinClass = (invalidCabinClass: InvalidCabinClass): cabin.Cabin => {
+    return cabin.from(invalidCabinClass);
 }
-const validateFlightSearchCriteria = async (checkRouteIsServed: CheckRouteIsServed,
+const validateFlightSearchCriteria: ValidateFlightSearchCriteria = async (checkRouteIsServed: CheckRouteIsServed,
                                             invalidCriteria: InvalidFlightSearchCriteria): Promise<FlightSearchCriteria> => {
     const route = await toRoute(checkRouteIsServed, invalidCriteria.route)
     const flightTypePeriod = toFlightTypePeriod(invalidCriteria.flightTypePeriod)
@@ -100,8 +99,13 @@ const validateFlightSearchCriteria = async (checkRouteIsServed: CheckRouteIsServ
     }
 }
 
-export const searchFlight = (checkRouteIsServed: CheckRouteIsServed): ValidateFlightSearchCriteria => {
-    return async (invalidCriteria: InvalidFlightSearchCriteria): Promise<FlightSearchCriteria> => {
-        return await validateFlightSearchCriteria(checkRouteIsServed, invalidCriteria);
+export const searchFlight = (checkRouteIsServed: CheckRouteIsServed, encryptFlightSearchCriteria: EncryptFlightSearchCriteria): SearchFlight => {
+    return async (invalidCriteria: InvalidFlightSearchCriteria): Promise<string> => {
+        try {
+            const criteria = await validateFlightSearchCriteria(checkRouteIsServed, invalidCriteria);
+            return await encryptFlightSearchCriteria(criteria);
+        } catch (e: any) {
+            throw new Error(e.message)
+        }
     }
 }

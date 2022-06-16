@@ -1,16 +1,14 @@
 import {InvalidFlightSearchCriteria} from "../application/types";
-import {Airport} from "./airport";
 import {FlightType} from "./flight-type";
 import {FlightDate} from "./flight-date";
+import {Cabin} from "./cabin";
+import {Route} from "./route";
 
 export type CheckRouteIsServed = (route: Route) => Promise<boolean>
 
-export type ValidateFlightSearchCriteria = (invalidFlightSearchCriteria: InvalidFlightSearchCriteria) => Promise<FlightSearchCriteria>
+export type ValidateFlightSearchCriteria = (checkRouteIsServed: CheckRouteIsServed, invalidFlightSearchCriteria: InvalidFlightSearchCriteria) => Promise<FlightSearchCriteria>
 
-export type Route = Readonly<{
-    origin: Airport,
-    destination: Airport
-}>
+export type EncryptFlightSearchCriteria = (flightSearchCriteria: FlightSearchCriteria) => Promise<string>
 
 export type FlightTypePeriod = Readonly<{
     flightType: FlightType,
@@ -24,15 +22,15 @@ export type Passengers = Readonly<{
     infant: number
 }>
 
-export type CabinClass = Readonly<'economic' | 'business' | 'first'>
-
 export type FlightSearchCriteria = Readonly<{
     route: Route,
     flightTypePeriod: FlightTypePeriod,
     passengers: Passengers,
-    cabinClass: CabinClass
+    cabinClass: Cabin
 }>
 
 export * as airport from './airport'
 export * as flightDate from './flight-date'
 export * as flightType from './flight-type'
+export * as cabin from './cabin'
+export * as route from './route';

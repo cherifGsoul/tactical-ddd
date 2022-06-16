@@ -9,3 +9,7 @@ export const fromCode = (code: string) => {
     }
     return code as Airport;
 }
+
+export const equals = (origin: Airport, destination: Airport): boolean => {
+    return origin === destination;
+}
