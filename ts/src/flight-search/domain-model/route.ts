@@ -1,5 +1,10 @@
 import * as airport from "./airport";
 
+export function toString(aRoute: Route) {
+    return `${aRoute.origin}-${aRoute.destination}`;
+}
+
+
 export type Route = Readonly<{
     origin: airport.Airport,
     destination: airport.Airport

@@ -7,7 +7,9 @@ import {
     cabin,
     flightDate,
     flightType,
-    route, EncryptFlightSearchCriteria, ValidateFlightSearchCriteria
+    route,
+    EncryptFlightSearchCriteria,
+    ValidateFlightSearchCriteria
 } from '../domain-model';
 import {
     InvalidCabinClass,
